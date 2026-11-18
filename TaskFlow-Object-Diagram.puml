@@ -1,0 +1,38 @@
+﻿@startuml
+ title TaskFlow API — Object Diagram
+ left to right direction
+ skinparam objectAttributeIconSize 0
+ skinparam linetype ortho
+
+ object "creator : AppUser" as creator {
+   id = 10
+   email = "alex@example.com"
+   displayName = "Alex"
+   role = USER
+ }
+
+ object "assignee : AppUser" as assignee {
+   id = 12
+   email = "sam@example.com"
+   displayName = "Sam"
+   role = USER
+ }
+
+ object "task : Task" as task {
+   id = 44
+   title = "Prepare sprint plan"
+   status = IN_PROGRESS
+   priority = HIGH
+   version = 0
+ }
+
+ object "comment : TaskComment" as comment {
+   id = 80
+   body = "Milestones are outlined"
+ }
+
+ creator --> task : createdBy
+ assignee --> task : assignee
+ task --> comment : comments
+ creator --> comment : author
+@enduml

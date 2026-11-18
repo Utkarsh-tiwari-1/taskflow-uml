@@ -7,11 +7,12 @@ GitHub renders the Mermaid previews below. Editable PlantUML sources are include
 | Diagram | PlantUML source |
 |---|---|
 | [Architecture](#architecture) | [TaskFlow-Architecture.puml](TaskFlow-Architecture.puml) |
-| [Domain classes](#domain-class-diagram) | [TaskFlow-Domain.puml](TaskFlow-Domain.puml) |
+| [Class diagram](#domain-class-diagram) | [TaskFlow-Domain.puml](TaskFlow-Domain.puml) |
+| [Object diagram](#object-diagram) | [TaskFlow-Object-Diagram.puml](TaskFlow-Object-Diagram.puml) |
 | [Database ER diagram](#database-er-diagram) | [TaskFlow-ERD.puml](TaskFlow-ERD.puml) |
-| [Use cases](#use-case-diagram) | [TaskFlow-Use-Cases.puml](TaskFlow-Use-Cases.puml) |
+| [Use case diagram](#use-case-diagram) | [TaskFlow-Use-Cases.puml](TaskFlow-Use-Cases.puml) |
 | [Authentication sequence](#authentication-sequence) | [TaskFlow-Authentication-Sequence.puml](TaskFlow-Authentication-Sequence.puml) |
-| [Task request activity](#task-request-activity) | [TaskFlow-Task-Request-Activity.puml](TaskFlow-Task-Request-Activity.puml) |
+| [Activity diagram](#task-request-activity) | [TaskFlow-Task-Request-Activity.puml](TaskFlow-Task-Request-Activity.puml) |
 
 ## Architecture
 
@@ -88,6 +89,22 @@ classDiagram
 
 A task has exactly one creator and may have one assignee. Each comment belongs to one task and has one author. The enum values and relationships match the JPA entities and the initial Flyway migration in the API project.
 
+## Object diagram
+
+This sample object snapshot shows a user creating a task, another user assigned to it, and a comment authored by the creator.
+
+```mermaid
+flowchart LR
+    creator["creator : AppUser<br/>id = 10<br/>email = alex@example.com<br/>role = USER"]
+    assignee["assignee : AppUser<br/>id = 12<br/>email = sam@example.com<br/>role = USER"]
+    task["task : Task<br/>id = 44<br/>title = Prepare sprint plan<br/>status = IN_PROGRESS<br/>priority = HIGH"]
+    comment["comment : TaskComment<br/>id = 80<br/>body = Milestones are outlined"]
+
+    creator -->|createdBy| task
+    assignee -->|assignee| task
+    task -->|has comment| comment
+    creator -->|author| comment
+```
 ## Database ER diagram
 
 ```mermaid
