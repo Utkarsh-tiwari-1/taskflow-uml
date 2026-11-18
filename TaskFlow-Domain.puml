@@ -1,0 +1,62 @@
+﻿@startuml
+ title TaskFlow API — Domain Class Diagram
+ left to right direction
+ skinparam classAttributeIconSize 0
+ skinparam packageStyle rectangle
+
+ package "com.taskflow.domain" {
+   class AppUser {
+     id: Long
+     email: String
+     passwordHash: String
+     displayName: String
+     role: Role
+     createdAt: Instant
+   }
+
+   class Task {
+     id: Long
+     title: String
+     description: String
+     status: TaskStatus
+     priority: TaskPriority
+     dueAt: Instant
+     createdAt: Instant
+     updatedAt: Instant
+     version: long
+   }
+
+   class TaskComment {
+     id: Long
+     body: String
+     createdAt: Instant
+   }
+
+   enum Role {
+     USER
+     ADMIN
+   }
+
+   enum TaskStatus {
+     OPEN
+     IN_PROGRESS
+     COMPLETED
+     ARCHIVED
+   }
+
+   enum TaskPriority {
+     LOW
+     MEDIUM
+     HIGH
+     URGENT
+   }
+ }
+
+ AppUser "1" <-- "0..*" Task : createdBy
+ AppUser "0..1" <-- "0..*" Task : assignee
+ Task "1" <-- "0..*" TaskComment : task
+ AppUser "1" <-- "0..*" TaskComment : author
+ AppUser ..> Role
+ Task ..> TaskStatus
+ Task ..> TaskPriority
+@enduml
