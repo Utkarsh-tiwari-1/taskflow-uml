@@ -1,0 +1,31 @@
+﻿@startuml
+ title TaskFlow API — Use Case Diagram
+ left to right direction
+ skinparam packageStyle rectangle
+
+ actor User
+ actor Admin
+ Admin --|> User
+
+ rectangle "TaskFlow API" {
+   usecase "Register / log in" as UCAuth
+   usecase "View / update\nown profile" as UCProfile
+   usecase "Browse accessible\ntasks" as UCBrowse
+   usecase "Create task" as UCCreate
+   usecase "Update task / status" as UCEdit
+   usecase "Assign / delete\ncreated task" as UCManageOwn
+   usecase "Comment on\naccessible task" as UCComment
+   usecase "Manage user\ndirectory" as UCDirectory
+   usecase "Manage any task" as UCAdminTasks
+ }
+
+ User --> UCAuth
+ User --> UCProfile
+ User --> UCBrowse
+ User --> UCCreate
+ User --> UCEdit
+ User --> UCManageOwn
+ User --> UCComment
+ Admin --> UCDirectory
+ Admin --> UCAdminTasks
+@enduml

@@ -1,0 +1,47 @@
+﻿@startuml
+ title TaskFlow API — Database ER Diagram
+ left to right direction
+ hide circle
+ skinparam linetype ortho
+
+ entity "app_users" as APP_USERS {
+   * id : BIGINT <<PK>>
+   --
+   * email : VARCHAR(254) <<UK>>
+   * password_hash : VARCHAR(100)
+   * display_name : VARCHAR(100)
+   * role : VARCHAR(20)
+   * created_at : TIMESTAMP
+ }
+
+ entity "tasks" as TASKS {
+   * id : BIGINT <<PK>>
+   --
+   * title : VARCHAR(150)
+   description : TEXT
+   * status : VARCHAR(30)
+   * priority : VARCHAR(20)
+   due_at : TIMESTAMP
+   * created_at : TIMESTAMP
+   * updated_at : TIMESTAMP
+   * version : BIGINT
+   * created_by_id : BIGINT <<FK>>
+   assignee_id : BIGINT <<FK, nullable>>
+ }
+
+ entity "task_comments" as TASK_COMMENTS {
+   * id : BIGINT <<PK>>
+   --
+   * task_id : BIGINT <<FK>>
+   * author_id : BIGINT <<FK>>
+   * body : VARCHAR(2000)
+   * created_at : TIMESTAMP
+ }
+
+ APP_USERS ||--o{ TASKS : creates
+ APP_USERS o|--o{ TASKS : assigned_to
+ TASKS ||--o{ TASK_COMMENTS : has
+ APP_USERS ||--o{ TASK_COMMENTS : authors
+ note bottom of TASKS : assignee_id is nullable
+ note bottom of TASK_COMMENTS : task deletion cascades to comments
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+ title TaskFlow API — Task Request Activity
+ start
+ :Client sends a task request with a bearer token;
+ if (JWT valid?) then (yes)
+   :TaskController validates the request (and body when present);
+   :TaskService checks visibility and operation permissions;
+   if (Operation allowed?) then (yes)
+     :Read or write through repositories;
+     :Return JSON response;
+   else (no)
+     :Return API access error;
+   endif
+ else (no)
+   :Return 401 Unauthorized;
+ endif
+ stop
+@enduml

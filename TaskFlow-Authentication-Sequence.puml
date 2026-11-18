@@ -1,0 +1,53 @@
+@startuml
+ title TaskFlow API — Authentication Sequence
+ actor Client
+ participant AuthController
+ participant AuthService
+ participant UserRepository
+ database MySQL
+ participant PasswordEncoder
+ participant JwtEncoder
+ participant "API Exception Handler" as ErrorHandler
+
+ alt Register
+   Client -> AuthController : POST /api/auth/register
+   AuthController -> AuthService : register(request)
+   AuthService -> UserRepository : existsByEmail(normalizedEmail)
+   UserRepository -> MySQL : Check email
+   MySQL --> UserRepository : Exists / absent
+   UserRepository --> AuthService : Result
+   alt Email already exists
+     AuthService --> ErrorHandler : Conflict
+     ErrorHandler --> Client : 409 Conflict
+   else New account
+     AuthService -> PasswordEncoder : encode(password)
+     PasswordEncoder --> AuthService : passwordHash
+     AuthService -> UserRepository : save(AppUser, role=USER)
+     UserRepository -> MySQL : INSERT app_users
+     MySQL --> UserRepository : Saved row
+     UserRepository --> AuthService : optional user
+     AuthService -> JwtEncoder : Sign HS256 claims
+     JwtEncoder --> AuthService : Access token
+     AuthService --> AuthController : AuthResponse
+     AuthController --> Client : 201 Created + token
+   end
+ else Log in
+   Client -> AuthController : POST /api/auth/login
+   AuthController -> AuthService : login(request)
+   AuthService -> UserRepository : findByEmail(normalizedEmail)
+   UserRepository -> MySQL : SELECT app_users
+   MySQL --> UserRepository : User or absent
+   UserRepository --> AuthService : optional user
+   AuthService -> PasswordEncoder : Check password if user found
+   PasswordEncoder --> AuthService : Match result
+   alt Credentials valid
+     AuthService -> JwtEncoder : Sign HS256 claims
+     JwtEncoder --> AuthService : Access token
+     AuthService --> AuthController : AuthResponse
+     AuthController --> Client : 200 OK + token
+   else Email missing or password invalid
+     AuthService --> ErrorHandler : Unauthorized
+     ErrorHandler --> Client : 401 Unauthorized
+   end
+ end
+@enduml
